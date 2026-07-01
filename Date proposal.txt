@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Proposal</title>
+    <style>
+        :root {
+            --primary-color: #ff4b5c;
+            --secondary-color: #ff758c;
+            --bg-color: #fff5f6;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffeef0 0%, #fff5f6 100%);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        /* Buttons */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 75, 92, 0.3);
+        }
+
+        .btn-no {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-no:hover {
+            background: #d5d5d5;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Form Inputs */
+        input[type="date"] {
+            padding: 12px;
+            border: 2px solid #ffccd2;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .day-display {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            min-height: 24px;
+        }
+
+        /* Food Grid */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .food-item {
+            border: 2px solid #ffeef0;
+            border-radius: 12px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+
+        .food-item:hover {
+            border-color: var(--secondary-color);
+            background: #fff9fa;
+        }
+
+        .food-item.selected {
+            border-color: var(--primary-color);
+            background: #ffeef0;
+        }
+
+        .food-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .food-item span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        /* Summary Details */
+        .summary-box {
+            background: #fff5f6;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .summary-box p {
+            margin-bottom: 5px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div id="step1" class="step active">
+            <h2>Would you like to go on a date with me? 🌹</h2>
+            <p>I promise great conversation and delicious food.</p>
+            <div class="btn-container">
+                <button class="btn" onclick="nextStep(2)">Yes</button>
+                <button class="btn btn-no" id="noBtn" onmouseover="moveNoButton()">No</button>
+            </div>
+        </div>
+
+        <div id="step2" class="step">
+            <h2>Pick a perfect day 📅</h2>
+            <p>Select a date for our meetup:</p>
+            <input type="date" id="datePicker" onchange="updateDayName()">
+            <div id="dayDisplay" class="day-display"></div>
+            <div class="btn-container">
+                <button class="btn" onclick="goToFoodStep()">Next</button>
+            </div>
+        </div>
+
+        <div id="step3" class="step">
+            <h2>What are we eating? 🍔</h2>
+            <p>Pick your favorite treat (you can choose more than one):</p>
+            <div class="food-grid">
+                <div class="food-item" onclick="toggleFood(this, 'Snacks (Nachos & Fries)')">
+                    <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?q=80&w=400&auto=format&fit=crop" alt="Snacks">
+                    <span>Snacks</span>
+                </div>
+                <div class="food-item" onclick="toggleFood(this, 'Fast Food (Burgers)')">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=400&auto=format&fit=crop" alt="Fast Food">
+                    <span>Fast Food</span>
+                </div>
+                <div class="food-item" onclick="toggleFood(this, 'Dessert (Waffles & Ice Cream)')">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=400&auto=format&fit=crop" alt="Dessert">
+                    <span>Dessert</span>
+                </div>
+                <div class="food-item" onclick="toggleFood(this, 'Coffee & Pastries')">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop" alt="Coffee">
+                    <span>Cafe Date</span>
+                </div>
+            </div>
+            <div class="btn-container">
+                <button class="btn" onclick="goToFinalStep()">Confirm Plan</button>
+            </div>
+        </div>
+
+        <div id="step4" class="step">
+            <h2>Congratulations! 🎉</h2>
+            <p>It's official. Our date is successfully fixed!</p>
+            <div class="summary-box">
+                <p>📅 <strong>Date:</strong> <span id="finalDate"></span></p>
+                <p>📆 <strong>Day:</strong> <span id="finalDay"></span></p>
+                <p>🍕 <strong>Menu:</strong> <span id="finalFood"></span></p>
+            </div>
+            <p>Can't wait to see you there! ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedDate = '';
+        let selectedDayName = '';
+        let selectedFoods = [];
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('datePicker').setAttribute('min', today);
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+        }
+
+        // Trick "No" button functionality (playful)
+        function moveNoButton() {
+            const noBtn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 50);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
+            
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        }
+
+        // Live day updating on choice
+        function updateDayName() {
+            const dateInput = document.getElementById('datePicker').value;
+            const dayDisplay = document.getElementById('dayDisplay');
+            
+            if (dateInput) {
+                const dateObj = new Date(dateInput);
+                const options = { weekday: 'long' };
+                selectedDayName = new Intl.DateTimeFormat('en-US', options).format(dateObj);
+                selectedDate = dateInput;
+                dayDisplay.innerText = `That's a beautiful ${selectedDayName}!`;
+            } else {
+                dayDisplay.innerText = '';
+            }
+        }
+
+        function goToFoodStep() {
+            if (!selectedDate) {
+                alert('Please pick a date first! 😉');
+                return;
+            }
+            nextStep(3);
+        }
+
+        function toggleFood(element, foodName) {
+            element.classList.toggle('selected');
+            if (selectedFoods.includes(foodName)) {
+                selectedFoods = selectedFoods.filter(item => item !== foodName);
+            } else {
+                selectedFoods.push(foodName);
+            }
+        }
+
+        function goToFinalStep() {
+            if (selectedFoods.length === 0) {
+                alert('Please pick at least one food option! 🍰');
+                return;
+            }
+
+            // Populate summary
+            document.getElementById('finalDate').innerText = selectedDate;
+            document.getElementById('finalDay').innerText = selectedDayName;
+            document.getElementById('finalFood').innerText = selectedFoods.join(', ');
+
+            nextStep(4);
+        }
+    </script>
+</body>
+</html>
